@@ -47,7 +47,14 @@ fn build_opus(is_static: bool) {
     );
 
     println!("cargo:info=Building Opus via CMake.");
-    let opus_build_dir = cmake::build(opus_path);
+
+    let mut config = cmake::Config::new(opus_path);
+
+    #[cfg(target_pointer_width = "32")]
+    config.cflag("-m32");
+
+    let opus_build_dir = config.build();
+
     link_opus(is_static, opus_build_dir.display())
 }
 
